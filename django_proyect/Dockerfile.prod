@@ -1,0 +1,33 @@
+# Usar una imagen base de Python
+FROM python:3.9-slim
+
+# Establecer el directorio de trabajo en /app
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev build-essential pkg-config \
+    libssl-dev libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar el archivo requirements.txt desde el contexto de construcción
+COPY requirements.txt .
+
+# Instalar dependencias de Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el código de la aplicación desde django_proyect/
+COPY django_proyect/ .
+
+# Exponer el puerto 8000
+EXPOSE 8000
+
+# Establecer variables de entorno
+ENV PYTHONUNBUFFERED=1
+
+# Ejecutar migraciones y recolectar archivos estáticos
+RUN python manage.py migrate --noinput
+RUN python manage.py collectstatic --noinput
+
+# Comando para ejecutar la aplicación con Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "django_app.wsgi:application"]

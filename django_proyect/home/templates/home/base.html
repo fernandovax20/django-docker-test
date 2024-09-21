@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mi Sitio{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'home/css/bootstrap.min.css' %}">
+</head>
+<body>
+    {% block content %}
+    {% endblock %}
+    <script src="{% static 'home/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
